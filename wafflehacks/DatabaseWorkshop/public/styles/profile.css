@@ -1,0 +1,25 @@
+.title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.main {
+    text-align: center;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+#prof-pic-upload {
+    width: 9rem;
+    height: 9rem;
+    border-radius: 9999px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    transition: all 200ms ease-in-out;
+}
+#prof-pic-upload:hover {
+    filter: brightness(75%) blur(0.5px);
+}
