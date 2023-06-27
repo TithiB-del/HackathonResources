@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Forum Chat</title>
+  <script src="/tailwindplay.js"></script>
+  <link rel="stylesheet" href="/styles/nav.css">
+  <link rel="stylesheet" href="/styles/chat.css">
+</head>
+<body>
+
+  <div class="nav-surround">
+    <nav>
+      <span class='name'>Global Forum</span>
+  
+      <div class='info'>
+        <span class='spacer'></span>
+        <button>About</button>
+        <span class='spacer'></span>
+        <button onclick="showLogin()" class="profpic">
+          <img src="{{profilePic}}" alt="profile picture">
+        </button>
+        
+        <div action="/login" id="login-box" class="logged-in hidden">
+          
+          <button onclick="location.href='/chat'">To Chat</button>
+          <button onclick="location.href='/profile'">Profile</button>
+          <button id="login-signup" href="" onclick="location.href='/logout'">Log Out</button>
+          
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div id="messages">  
+  </div>
+
+  <div id="sendbar">
+    <input id="msg-inp" type="text" placeholder="text something!">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script src="/socketio.js"></script>
+  
+  <script>
+    var socket = io();
+    var inp = document.getElementById('msg-inp');
+    var name = "";
+
+    function sendMessage(){
+      socket.emit('message', inp.value);
+      inp.value = "";
+    }
+
+    socket.on('message', (msg, author, img) => {
+      let isme = author == name ? "self" : "other";
+      
+      document.getElementById('messages').innerHTML += `
+      <div class="message">
+        <span class="author">${author}</span>
+        <div class="body ${isme}">
+          <img src="${img}" alt="profile picture">
+          <span>${msg}</span>
+        </div>
+      </div>
+      `
+    });
+
+    function showLogin(){
+      let loginbox = document.getElementById("login-box");
+      loginbox.classList.toggle('hidden');
+    }
+
+  </script>
+
+</body>
+</html>
