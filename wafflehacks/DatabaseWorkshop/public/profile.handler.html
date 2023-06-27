@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <script src="/tailwindplay.js"></script>
+  <link rel="stylesheet" href="/styles/nav.css">
+  <link rel="stylesheet" href="/styles/profile.css">
+</head>
+<body>
+  <div class="nav-surround">
+    <nav>
+      <span class='name'>Global Forum</span>
+  
+      <div class='info'>
+        <span class='spacer'></span>
+        <button>About</button>
+        <span class='spacer'></span>
+        <button onclick="showLogin()" class="profpic">
+          <img src="{{profilePic}}" alt="profile picture">
+        </button>
+        
+        <div action="/login" id="login-box" class="logged-in hidden">
+          
+          <button onclick="location.href='/chat'">To Chat</button>
+          <button onclick="location.href='/profile'">Profile</button>
+          <button id="login-signup" href="" onclick="location.href='/logout'">Log Out</button>
+          
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <h1 class="title">Profile Settings</h1>
+
+  <div class="main">
+    <button onclick="uploadPhoto()" id="prof-pic-upload">
+      <img src="{{profilePic}}" alt="">
+      <span class="absolute w-full bottom-0 left-0 pt-2 pb-4 text-sm bg-black/50 text-white">Upload Photo</span>
+    </button>
+    
+    <br>
+
+    <div class="inline-flex flex-col text-left mt-4">
+      <span id="username-error" class="text-red-500 text-base"></span>
+
+      <table class="border-spacing-2 border-separate">
+        <tbody>
+          <tr>
+            <td>Username: </td>
+            <td><input type="text" id="username" value="{{username}}" class="border-2 border-gray-700 rounded-md px-2 py-1 outline-transparent w-60"></td>
+            <td><button onclick="updateUsername()" class="bg-green-300 border-2 border-green-800 py-1 px-2 rounded-md">Update Username</button></td>
+          </tr>
+          <tr>
+            <td>Email: </td>
+            <td><input type="text" id="email" value="{{email}}" class="border-2 border-gray-700 rounded-md px-2 py-1 outline-transparent w-60"></td>
+            <td><button onclick="updateEmail()" class="bg-green-300 border-2 border-green-800 py-1 px-2 rounded-md">Update Username</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <span id="password-error" class="text-red-500 text-base mt-4"></span>
+      <span>Reset password: </span>
+      <input type="text" id="old-pass" placeholder="old password" class="border-2 border-gray-700 rounded-md px-2 py-1 outline-transparent w-60">
+      <input type="text" id="new-pass" placeholder="new password" class="border-2 border-gray-700 rounded-md px-2 py-1 outline-transparent w-60 mt-2">
+      <button onclick="updatePassword()" class="bg-green-300 border-2 border-green-800 py-1 px-2 w-60 rounded-md mt-2">Update password</button>
+    </div>
+
+  </div>
+
+  
+  <script>
+
+    function showLogin(){
+      let loginbox = document.getElementById("login-box");
+      loginbox.classList.toggle('hidden');
+    }
+
+    function elementError(id, msg) {
+      let error = document.getElementById(id);
+      error.classList.remove('text-green-600');
+      error.classList.add('text-red-500');
+      error.innerHTML = msg;
+    }
+
+    function elementSuccess(id, msg) {
+      let success = document.getElementById(id);
+      success.classList.remove('text-red-500');
+      success.classList.add('text-green-600');
+      success.innerHTML = msg;
+    }
+
+    function updateUsername(){
+      let username = document.getElementById("username").value;
+      if(username.length < 3){
+        elementError("username-error", "Username must be at least 3 characters long");
+        return;
+      }
+      fetch('/updateUsername', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username: username})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) elementSuccess("username-error", "Username updated successfully");
+        else elementError("username-error", data.error);
+      })
+    }
+
+    function updatePassword(){
+      let oldPass = document.getElementById("old-pass").value;
+      let newPass = document.getElementById("new-pass").value;
+      let passwordError = document.getElementById("password-error");
+      if(newPass.length < 6){
+        elementError("password-error", "Password must be at least 6 characters long");
+        return;
+      }
+      fetch('/updatePassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({oldPass: oldPass, newPass: newPass})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) elementSuccess("password-error", "Password updated successfully");
+        else elementError("password-error", data.error);
+      })
+    }
+
+    function uploadPhoto(){
+      let input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = e => {
+        let file = e.target.files[0];
+        if (!file) return;
+        let formData = new FormData();
+        formData.append('profilePic', file);
+        fetch('/setProfilePicture', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.success) location.reload();
+          else alert(data.error);
+        })
+      }
+      input.click();
+    }
+
+  </script>
+
+</body>
+</html>
