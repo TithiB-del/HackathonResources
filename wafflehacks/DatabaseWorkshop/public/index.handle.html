@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Forum</title>
+  <script src="/tailwindplay.js"></script>
+  <link rel="stylesheet" href="/styles/nav.css">
+  <link rel="stylesheet" href="/styles/index.css">
+  
+</head>
+<body>
+  <nav>
+    <span class='name'>Global Forum</span>
+
+    <div class='info'>
+      <span class='spacer'></span>
+      <button>About</button>
+      <span class='spacer'></span>
+      <button onclick="showLogin()">Log In</button>
+      
+      <div action="/login" id="login-box" class="unlogged hidden">
+        <span id="login-err" class='hidden'>error</span>
+        <input id="login-email" name="email" type="text" placeholder="Email">
+        <input id="login-pass" name="pass" type="password" placeholder="Password">
+
+        <input type="password" id="retype-password" id="pass2" placeholder="Retype password" class="hidden">
+        <button onclick="sendLogin()" id="login-btn">Log In</button>
+        <button id="login-signup" href="" onclick="loginSwitch()">Sign up</button>
+        <button id="login-login" onclick="loginSwitch()" class='hidden'>Log In</button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="welcome">
+    <h1>Welcome to <i>Global Forum</i>!</h1>
+  </div>
+
+  <div class="card">
+    <span>We do fun things here!</span>
+  </div>
+
+  <div class="example-texts">
+    <div class="text me">
+      <span>The_Gekko</span>
+      <div>
+        <img src="/images/dog.jpeg" alt="">
+        <span>Whoa, have you heard of the global forum?</span>
+      </div>
+      
+    </div>
+
+    <div class="text other">
+      <span>Shellaxen</span>
+      <div>
+        <img src="/images/llama.jpeg" alt="">
+        <span>Crazy, you're on it!</span>
+      </div>
+      
+    </div>
+    <div class="ellipses">...</div>
+  </div>
+
+  <button onclick="showLogin()" id="signup-now-btn">Sign Up Now!</button>
+
+  <script>
+
+    function sendLogin(){
+      let email = document.getElementById('login-email').value;
+      let pass = document.getElementById('login-pass').value;
+      let pass2 = document.getElementById('retype-password');
+
+      let route = pass2.classList.contains('hidden') ? '/login' : '/signup';
+
+      fetch(route, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          pass: pass,
+          pass2: pass2.value
+        })
+      }).then(resp => resp.json()).then(json => {
+        if (json.error) {
+          document.getElementById('login-err').classList.remove('hidden');
+          document.getElementById('login-err').innerHTML = json.error;
+          return;
+        }
+        location.href = "/chat"
+      });
+    }
+
+
+    function loginSwitch(){
+      let signup = document.getElementById("login-signup");
+      let login = document.getElementById("login-login");
+      let retype = document.getElementById("retype-password");
+      let btn = document.getElementById("login-btn");
+      let loginbox = document.getElementById("login-box");
+
+      if (signup.classList.contains('hidden')) {
+        signup.classList.remove('hidden');
+        login.classList.add('hidden');
+        retype.classList.add('hidden');
+        btn.innerHTML = "Log In";
+        loginbox.action = "/login"
+      }
+      else {
+        signup.classList.add('hidden');
+        login.classList.remove('hidden');
+        retype.classList.remove('hidden');
+        btn.innerHTML = "Sign Up";
+        loginbox.action = "/signup"
+      }
+    }
+
+    function showLogin(){
+      let loginbox = document.getElementById("login-box");
+      loginbox.classList.toggle('hidden');
+    }
+
+    const cards = document.querySelectorAll(".card");
+    for(let i=0; i<cards.length; i++){
+    	cards[i].addEventListener('mousemove', rotate);
+    	cards[i].addEventListener('mouseleave', clearRotate);
+    }
+    
+    function rotate(e){
+    	const cardItem = this;
+    	const force = 15;
+    	const offsetY = -(e.offsetY - cardItem.offsetHeight/2)/force;
+    	const offsetX = (e.offsetX - cardItem.offsetWidth/2)/force;
+    	cardItem.style.transform = 'rotateX(' + offsetY + 'deg) rotateY(' + offsetX + 'deg)';
+    }
+    
+    function clearRotate(e){
+    	if(e.target.classList.contains("card")){
+    		const cardItem = this;
+    		cardItem.style.transform = 'rotateX(0) rotateY(0)';
+    	}
+    }
+
+  </script>
+  
+</body>
+</html>
