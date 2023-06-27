@@ -1,0 +1,73 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-image: url(/plane.png);
+  background-size: cover;
+
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+}
+
+#welcome-side {
+  color: white;
+  font-size: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.smaller {
+  font-size: 0.8em;
+}
+
+#wawa {
+  width: 1em;
+}
+
+#form-side {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.top-btn {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 999999px;
+}
+
+.top-btn:first-child {
+  background: #2258A1;
+  color: white;
+}
+
+.input-elements {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#submit-btn {
+  margin-top: 20px;
+  padding: 10px 30px;
+  background-color: #2258A1;
+  border: none;
+  border-radius: 99999px;
+  color: white;
+  font-size: 17px;
+}
+
+@media(max-width: 768px) {
+  body {
+    flex-direction: column;;
+  }
+}
