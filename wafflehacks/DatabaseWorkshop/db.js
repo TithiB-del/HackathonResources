@@ -1,8 +1,8 @@
 var admin = require("firebase-admin");
 var { FieldValue } = require("firebase-admin/firestore") 
-var creds = require('./database-workshop-b0515-firebase-adminsdk-4mamy-59017d6778.json');
+var creds = require('./database-workshop-firebase-adminsdk.json');
 
-const bucketurl = 'gs://database-workshop-b0515.appspot.com'
+const bucketurl = 'gs://database-workshop.appspot.com'
 
 admin.initializeApp({
     credential: admin.credential.cert(creds),
